@@ -26,6 +26,8 @@
 	String[] courseIds = request.getParameterValues("selectedCourses");
 	if(courseIds != null)
 	{
+		// Find out what term they've selected.
+		String selectedTerm = request.getParameter("selectedTerm");
 		// Want non-duplicate, alphabetized list of every student registered for at least one of the given courses. TreeSet is ideal for this.
 		Set<String> users = new TreeSet<String>();
 
@@ -37,7 +39,7 @@
 		// Iterate over supplied courses.
 		for(String courseId : courseIds)
 		{
-			Course course = courseLoader.loadByCourseId(courseId);
+			Course course = courseLoader.loadByCourseId(selectedTerm + "-" + courseId);
 			// Iterate over students in each course.
 			for(User user : userLoader.loadByCourseId(course.getId()))
 			{
@@ -71,7 +73,7 @@
 		</div>
 	<% }
 %>
- 
+
 </bbData:context>
 </div>
 </body>
