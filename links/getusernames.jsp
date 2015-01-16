@@ -31,10 +31,14 @@
 		// Want non-duplicate, alphabetized list of every student registered for at least one of the given courses. TreeSet is ideal for this.
 		Set<String> users = new TreeSet<String>();
 
-		// Set up database loaders.
+		// Set up persistence manager to get database loaders from.
 		BbPersistenceManager bbPm = BbServiceManager.getPersistenceService().getDbPersistenceManager();
-		UserDbLoader userLoader = (UserDbLoader) bbPm.getLoader(UserDbLoader.TYPE);
-		CourseDbLoader courseLoader = CourseDbLoader.Default.getInstance();
+		// Get user database loader; used to find every student in a given course.
+		UserDbLoader userLoader = (UserDbLoader)bbPm.getLoader(UserDbLoader.TYPE);
+		// Get course database loader; used to find a course by courseID.
+		CourseDbLoader courseLoader = (CourseDbLoader)bbPm.getLoader(CourseDbLoader.TYPE);
+		// Get course membership database loader; used to separate students from TA's and staff.
+		CourseMembershipDbLoader courseMembershipLoader = (CourseMembershipDbLoader)bbPm.getLoader(CourseMembershipDbLoader.TYPE);
 
 		// Iterate over supplied courses.
 		for(String courseId : courseIds)
@@ -43,25 +47,26 @@
 			// Iterate over students in each course.
 			for(User user : userLoader.loadByCourseId(course.getId()))
 			{
-				// Add each user to the TreeSet.
-				users.add(user.getUserName());
+				CourseMembership courseMembership = courseMembershipLoader.loadByCourseAndUserId(course.getId(), user.getId());
+				// Make sure the user is a student.
+				if(courseMembership.getRole() == CourseMembership.Role.STUDENT)
+				{
+					// Add each user to the TreeSet.
+					users.add(user.getUserName());
+				}
 			}
-		}
-		if(!users.isEmpty())
-		{
-			// Display each user.
-			for(String userName : users)
-			{ %>
-				<div>
-				<%=userName%>
-				</div>
-			<% }
-		}
-		else
-		// Don't want to send them to a blank page; confusing.
+		} %>
+
+		<%-- Display the total number of users, which also prevents blank pages if none are found. --%>
+		<div>
+		Total users: <%=users.size()%>
+		</div>
+
+		<%-- Display each user. --%>
+		<% for(String userName : users)
 		{ %>
 			<div>
-			There are no students currently registered for the selected course(s).
+			<%=userName%>
 			</div>
 		<% }
 	}
