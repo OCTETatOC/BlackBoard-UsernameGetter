@@ -17,7 +17,7 @@
 <%@ taglib uri="/bbData" prefix="bbData"%>
 <%@ taglib uri="/bbUI" prefix="bbUI"%>
 <%@ page import="blackboard.platform.plugin.PlugInUtil,
-				blackboard.persist.course.CourseSearch.*"
+				 blackboard.persist.course.CourseSearch.*"
 %>
 
 <bbData:context id="userCtxAvail">
@@ -48,7 +48,7 @@
 	<% }
 	else
 	{ %>
-		<!-- Show they which term they've selected. -->
+		<%-- Show they which term they've selected. --%>
 		<div>
 		Term selected: <%=readableSelectedTerm%>
 		<br>

@@ -12,11 +12,11 @@
                 blackboard.platform.persistence.*,
 				blackboard.portal.external.*,
 				blackboard.platform.session.*,
+				blackboard.platform.plugin.PlugInUtil,
 				java.text.SimpleDateFormat"
 %>
 <%@ taglib uri="/bbData" prefix="bbData"%>
 <%@ taglib uri="/bbUI" prefix="bbUI"%>
-<%@ page import="blackboard.platform.plugin.PlugInUtil"%>
 
 <bbData:context id="userCtxAvail">
 <%

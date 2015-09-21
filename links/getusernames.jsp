@@ -19,7 +19,7 @@
 <%@ page import="blackboard.platform.plugin.PlugInUtil"%>
 
 <body>
-<bbData:context id="userCtxAvail" >
+<bbData:context id="userCtxAvail">
 
 <%
 	// Find out which courses they've selected.
@@ -28,8 +28,6 @@
 	{
 		// Find out what term they've selected.
 		String selectedTerm = request.getParameter("selectedTerm");
-		// Want non-duplicate, alphabetized list of every student registered for at least one of the given courses. TreeSet is ideal for this.
-		Set<String> users = new TreeSet<String>();
 
 		// Set up persistence manager to get database loaders from.
 		BbPersistenceManager bbPm = BbServiceManager.getPersistenceService().getDbPersistenceManager();
@@ -39,6 +37,8 @@
 		CourseDbLoader courseLoader = (CourseDbLoader)bbPm.getLoader(CourseDbLoader.TYPE);
 		// Get course membership database loader; used to separate students from TA's and staff.
 		CourseMembershipDbLoader courseMembershipLoader = (CourseMembershipDbLoader)bbPm.getLoader(CourseMembershipDbLoader.TYPE);
+
+		int records = 0;
 
 		// Iterate over supplied courses.
 		for(String courseId : courseIds)
@@ -50,26 +50,30 @@
 				CourseMembership courseMembership = courseMembershipLoader.loadByCourseAndUserId(course.getId(), user.getId());
 				// Make sure the user is a student.
 				if(courseMembership.getRole() == CourseMembership.Role.STUDENT)
-				{
-					// Add each user to the TreeSet.
-					users.add(user.getUserName());
+				{ %>
+					<div>
+						<%=user.getUserName()%>,
+						<%=user.getBatchUid()%>,
+						<%=user.getFamilyName()%>,
+						<%=user.getGivenName()%>,
+						,
+						,
+						,
+						<%=course.getCourseId()%>,
+						<%=user.getUserName()+"@oberlin.edu"%>
+					</div>
+				<%
+				records++;
 				}
 			}
 		} %>
 
 		<%-- Display the total number of users, which also prevents blank pages if none are found. --%>
 		<div>
-		Total users: <%=users.size()%>
+		Total records: <%=records%>
 		</div>
 
-		<%-- Display each user. --%>
-		<% for(String userName : users)
-		{ %>
-			<div>
-			<%=userName%>
-			</div>
-		<% }
-	}
+	<% }
 	else
 	// Don't want to send them to a blank page; confusing.
 	{ %>

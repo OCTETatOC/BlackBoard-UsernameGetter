@@ -17,7 +17,7 @@
 <%@ taglib uri="/bbData" prefix="bbData"%>
 <%@ taglib uri="/bbUI" prefix="bbUI"%>
 <%@ page import="blackboard.platform.plugin.PlugInUtil,
-				blackboard.persist.course.CourseSearch.*"
+				 blackboard.persist.course.CourseSearch.*"
 %>
 
 <bbData:context id="userCtxAvail">
